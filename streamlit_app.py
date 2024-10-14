@@ -5,7 +5,7 @@ import plotly.express as px
 # Load and process data
 @st.cache_data
 def load_data(cutoff_date, vax_metric):
-    df = pd.read_csv('/home/davide/Downloads/excess-mortality-p-scores-projected-baseline.csv')
+    df = pd.read_csv('excess-mortality-p-scores-projected-baseline.csv')
     vaccine = pd.read_csv('https://raw.githubusercontent.com/owid/covid-19-data/refs/heads/master/public/data/vaccinations/vaccinations.csv')
     
     # Rename 'Entity' to 'Country' in the df dataframe
