@@ -49,11 +49,11 @@ data = load_data(cutoff_date, vax_metric)
 fig = px.scatter(data, x=vax_metric, y=['avg_before', 'avg_after'],
                  hover_data=['Country', 'people_vaccinated_per_hundred', 'people_fully_vaccinated_per_hundred'],
                  labels={vax_metric: 'Vaccination Rate per Hundred',
-                         'value': 'Average',
-                         'variable': 'Period'},
-                 title=f'Average Before and After by Country/Vaccination Rate (Cutoff: {cutoff_date.strftime("%Y-%m-%d")})')
+                         'value': 'Average excess mortality',
+                         'variable': 'Periodo'},
+                 title=f'Average excess mortality before and after vaccination by Country/Vaccination Rate (Cutoff: {cutoff_date.strftime("%Y-%m-%d")})')
 
-fig.update_layout(legend_title_text='Period')
+fig.update_layout(legend_title_text='Periodo')
 
 # Display the plot
 st.plotly_chart(fig, use_container_width=True)
@@ -65,8 +65,8 @@ selected_country = st.selectbox('Select a Country', data['Country'].unique())
 if selected_country:
     country_data = data[data['Country'] == selected_country].iloc[0]
     st.write(f"Selected Country: {selected_country}")
-    st.write(f"Average Before: {country_data['avg_before']:.2f}")
-    st.write(f"Average After: {country_data['avg_after']:.2f}")
+    st.write(f"Prima della vaccinazione: {country_data['avg_before']:.2f}")
+    st.write(f"Dopo vaccinazione: {country_data['avg_after']:.2f}")
     st.write(f"People Vaccinated per Hundred: {country_data['people_vaccinated_per_hundred']:.2f}")
     st.write(f"People Fully Vaccinated per Hundred: {country_data['people_fully_vaccinated_per_hundred']:.2f}")
 
