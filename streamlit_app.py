@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
+from scipy import stats
 
 # Load and process data
 @st.cache_data
@@ -34,7 +36,7 @@ def load_data(cutoff_date, vax_metric):
     return merged
 
 # Streamlit app
-st.title('Mortalità in eccesso priam e dopo vaccinazione')
+st.title('Mortalità in eccesso prima e dopo vaccinazione')
 
 # Add options for cutoff date and vaccination metric
 cutoff_date = st.date_input('Select cutoff date', value=pd.to_datetime('2021-09-30'))
@@ -52,8 +54,25 @@ fig = px.scatter(data, x=vax_metric, y=['avg_before', 'avg_after'],
                          'value': 'Average excess mortality',
                          'variable': 'Periodo'},
                  title=f'Average excess mortality before and after vaccination by Country/Vaccination Rate (Cutoff: {cutoff_date.strftime("%Y-%m-%d")})')
-
 fig.update_layout(legend_title_text='Periodo')
+
+# Add regression button
+if st.button('Add Regression Line for After Vaccination'):
+    # Perform regression
+    slope, intercept, r_value, p_value, std_err = stats.linregress(data[vax_metric], data['avg_after'])
+    
+    # Add regression line to the plot
+    x_range = np.linspace(data[vax_metric].min(), data[vax_metric].max(), 100)
+    y_range = slope * x_range + intercept
+    fig.add_trace(go.Scatter(x=x_range, y=y_range, mode='lines', name='Regression Line (After)',
+                             line=dict(color='red', dash='dash')))
+    
+    # Display regression statistics
+    st.write(f"Regression Statistics:")
+    st.write(f"Slope: {slope:.4f}")
+    st.write(f"Intercept: {intercept:.4f}")
+    st.write(f"R-squared: {r_value**2:.4f}")
+    st.write(f"P-value: {p_value:.4f}")
 
 # Display the plot
 st.plotly_chart(fig, use_container_width=True)
